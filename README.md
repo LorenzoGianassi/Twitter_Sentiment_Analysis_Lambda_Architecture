@@ -5,7 +5,6 @@
 - [Usage](#3)
 # About the Project <a name="1"/>
 # Built with <a name="2"/>
-![](images/omp_logo.png) <br/>
 # Usage <a name="3"/>
 # Authors
 - **Lorenzo Gianassi**
