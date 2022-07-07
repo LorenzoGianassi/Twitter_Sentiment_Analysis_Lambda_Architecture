@@ -15,17 +15,18 @@ import java.io.File;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
-
+import speed_layer.bolts.*;
+import speed_layer.spouts.*;
 
 public class topology{
     public static void main(String[] args) throws Exception{
 
         // Initialize the twitter credentials requested by Twitter API
         List<String> lines = Files.readLines(new File("TwitterCredentials"), Charset.defaultCharset());
-        String consumerKey = Arrays.asList(lines.get(0).split(":")).get(1).trim();
-        String consumerSecret = Arrays.asList(lines.get(1).split(":")).get(1).trim();
-        String accessToken = Arrays.asList(lines.get(2).split(":")).get(1).trim();
-        String accessTokenSecret = Arrays.asList(lines.get(3).split(":")).get(1).trim();
+        String CKey = Arrays.asList(lines.get(0).split(":")).get(1).trim();
+        String CSecret = Arrays.asList(lines.get(1).split(":")).get(1).trim();
+        String AccToken = Arrays.asList(lines.get(2).split(":")).get(1).trim();
+        String AccTokenSecret = Arrays.asList(lines.get(3).split(":")).get(1).trim();
 
         //Read keywords as an argument
         String[] arguments = args.clone();
@@ -81,7 +82,16 @@ public class topology{
         // Building the topology using bolts and spouts
         TopologyBuilder builder = new TopologyBuilder();
 
+        builder.setSpout("Stream-Spout", new TwStreamSpout(CKey,CSecret,AccToken,AccTokenSecret,keywords),1);
 
-        // implementation of spouts and bolts
+
+        builder.setBolt("Bolt-Parser", new ParserTweetBolt(keywords), 3).shuffleGrouping("Stream-Spout");
+
+
+        builder.setBolt("MasterDb_bolt", new MasterDbBolt("tweet_master_Db"), 3).shuffleGrouping("Stream-Spout");
+
+
+
+
     }
 }
