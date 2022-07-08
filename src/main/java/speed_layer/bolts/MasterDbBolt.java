@@ -43,7 +43,7 @@ public class MasterDbBolt extends BaseRichBolt{
     }
 
     @Override
-    public void prepare(Map<String, Object> map, TopologyContext topologyContext, OutputCollector outputCollector){
+    public void prepare(Map<String, Object> map, TopologyContext TopContext, OutputCollector OutCollector){
         try{
             Configuration config = HBaseConfiguration.create();
             Connection connection = ConnectionFactory.createConnection(config);

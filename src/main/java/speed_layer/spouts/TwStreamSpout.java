@@ -34,8 +34,8 @@ public class TwStreamSpout extends BaseRichSpout{
         this.keywords = keywords;
     }
 
-    public void open(Map map, TopologyContext topologyContext, SpoutOutputCollector spoutOutputCollector){
-        this.collector = spoutOutputCollector;
+    public void open(Map map, TopologyContext TopContext, SpoutOutputCollector spoutOutCollector){
+        this.collector = spoutOutCollector;
         queue = new LinkedBlockingQueue<Status>(1000);
 
         StatusListener listener = new StatusListener(){

@@ -25,8 +25,8 @@ public class ParserTweetBolt extends BaseRichBolt{
     }
 
     @Override
-    public void prepare(Map<String, Object> map, TopologyContext TopContext, OutputCollector outCollector){
-        this.collector = outCollector;
+    public void prepare(Map<String, Object> map, TopologyContext TopContext, OutputCollector OutCollector){
+        this.collector = OutCollector;
     }
 
     // tuples ("tweet_ID", "text", "keywords")

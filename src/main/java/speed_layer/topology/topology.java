@@ -82,13 +82,20 @@ public class topology{
         // Building the topology using bolts and spouts
         TopologyBuilder builder = new TopologyBuilder();
 
-        builder.setSpout("Stream-Spout", new TwStreamSpout(CKey,CSecret,AccToken,AccTokenSecret,keywords),1);
+        builder.setSpout("Stream-Spout", new TwStreamSpout(CKey,CSecret,AccToken,AccTokenSecret,keywords));
 
 
-        builder.setBolt("Bolt-Parser", new ParserTweetBolt(keywords), 3).shuffleGrouping("Stream-Spout");
+        builder.setBolt("Bolt-Parser", new ParserTweetBolt(keywords)).shuffleGrouping("Stream-Spout");
 
 
-        builder.setBolt("MasterDb_bolt", new MasterDbBolt("tweet_master_Db"), 3).shuffleGrouping("Stream-Spout");
+        builder.setBolt("MasterDb-Bolt", new MasterDbBolt("tweet_master_Db")).shuffleGrouping("Stream-Spout");
+
+        // Add shufflingGroup with classifier
+        builder.setBolt("RealTimeDb-Bolt", new RealTimeDbBolt("real_time_Db"));
+
+        builder.setSpout("Syncronization-Spout", new SyncSpout("synchronization"));
+
+        builder.setBolt("Synchronization-Bolt", new SyncBolt("real_time_Db")).shuffleGrouping("Synchronizaion-Spout");
 
 
 
