@@ -62,7 +62,7 @@ public class SyncSpout extends BaseRichSpout{
     }
 
     @Override
-    public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer){
-        outputFieldsDeclarer.declare(new Fields("timestamp"));
+    public void declareOutputFields(OutputFieldsDeclarer Declarer){
+        Declarer.declare(new Fields("timestamp"));
     }
 }
