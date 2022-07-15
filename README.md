@@ -1,4 +1,5 @@
 # Twitter Sentiment Analysis with Lamba Architecture
+![](Images/logo_large.png) <br/>
 ## Table of Contents  
 - [About the Project](#1)  
   - [Built with](#2)
