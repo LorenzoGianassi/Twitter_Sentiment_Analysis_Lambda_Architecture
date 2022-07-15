@@ -55,8 +55,8 @@ public class CSVSpout extends BaseRichSpout{
     }
 
     @Override
-    public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer){
-        outputFieldsDeclarer.declare(new Fields("tweet_ID", "text", "keywords"));
+    public void declareOutputFields(OutputFieldsDeclarer outputDeclarer){
+        outputDeclarer.declare(new Fields("tweet_ID", "text", "keywords"));
     }
 }
 

@@ -47,7 +47,7 @@ public class ClassifierBolt extends BaseRichBolt{
     }
 
     @Override
-    public void declareOutputFields(OutputFieldsDeclarer Declarer){
-        Declarer.declare(new Fields("keyword", "sentiment"));
+    public void declareOutputFields(OutputFieldsDeclarer declarer){
+        declarer.declare(new Fields("keyword", "sentiment"));
     }
 }

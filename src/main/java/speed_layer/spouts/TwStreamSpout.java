@@ -87,8 +87,8 @@ public class TwStreamSpout extends BaseRichSpout{
         }
     }
 
-    public void declareOutputFields(OutputFieldsDeclarer Declarer){
-        Declarer.declare(new Fields("tweet"));
+    public void declareOutputFields(OutputFieldsDeclarer declarer){
+        declarer.declare(new Fields("tweet"));
     }
 
     @Override

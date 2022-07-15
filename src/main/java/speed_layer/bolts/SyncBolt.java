@@ -48,5 +48,5 @@ public class SyncBolt extends BaseRichBolt{
     }
 
     @Override
-    public void declareOutputFields(OutputFieldsDeclarer Declarer){}
+    public void declareOutputFields(OutputFieldsDeclarer declarer){}
 }

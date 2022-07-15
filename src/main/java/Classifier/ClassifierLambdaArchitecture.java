@@ -118,14 +118,14 @@ public class ClassifierLambdaArchitecture {
     public static void main(String[] args) throws Exception{
         File modelFile = new File(MODEL_FILE);
         if(modelFile.exists()){
-            ClassifierLambdaArchitecture classifier = new ClassifierLambdaArchitecture(modelFile);
-            classifier.evaluate(TEST_FILE);
+            ClassifierLambdaArchitecture classifierModel = new ClassifierLambdaArchitecture(modelFile);
+            classifierModel.evaluate(TEST_FILE);
         }
         else{
-            ClassifierLambdaArchitecture classifier = new ClassifierLambdaArchitecture();
-            classifier.train(TRAINING_FILE);
-            classifier.train(TRAINING_FILE);
-            classifier.storeModel(MODEL_FILE);
+            ClassifierLambdaArchitecture classifierModel = new ClassifierLambdaArchitecture();
+            classifierModel.train(TRAINING_FILE);
+            classifierModel.train(TRAINING_FILE);
+            classifierModel.storeModel(MODEL_FILE);
             System.out.println("Stored trained model in " + MODEL_FILE);
         }
     }
