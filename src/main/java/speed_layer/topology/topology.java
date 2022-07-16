@@ -84,19 +84,26 @@ public class topology{
 
         builder.setSpout("Stream-Spout", new TwStreamSpout(CKey,CSecret,AccToken,AccTokenSecret,keywords));
 
+        builder.setBolt("Parser-Bolt", new ParserTweetBolt(keywords)).shuffleGrouping("Stream-Spout");
 
-        builder.setBolt("Bolt-Parser", new ParserTweetBolt(keywords)).shuffleGrouping("Stream-Spout");
+        builder.setSpout("CSV-Spout", new CSVSpout());
+
+        builder.setBolt("Classifier-Bolt", new ClassifierBolt("SentimentClassifierTrainedModel.model")).shuffleGrouping("Parser-Bolt").shuffleGrouping("CSV-Spout");
+
+        builder.setBolt("MasterDb-Bolt", new MasterDbBolt("tweet_master_Db")).shuffleGrouping("Parser-Bolt").shuffleGrouping("CSV-Spout");
+
+        builder.setBolt("RealTimeDb-Bolt", new RealTimeDbBolt("Real_time_Db")).shuffleGrouping("Classifier-Bolt");
+
+        builder.setSpout("Syncronization-Spout", new SyncSpout("Synchronization"));
+
+        builder.setBolt("Synchronization-Bolt", new SyncBolt("Real_time_Db")).shuffleGrouping("Synchronizaion-Spout");
 
 
-        builder.setBolt("MasterDb-Bolt", new MasterDbBolt("tweet_master_Db")).shuffleGrouping("Stream-Spout");
-
-        // Add shufflingGroup with classifier
-        builder.setBolt("RealTimeDb-Bolt", new RealTimeDbBolt("real_time_Db"));
-
-        builder.setSpout("Syncronization-Spout", new SyncSpout("synchronization"));
-
-        builder.setBolt("Synchronization-Bolt", new SyncBolt("real_time_Db")).shuffleGrouping("Synchronizaion-Spout");
-
+        //Initialize the Cluster
+        LocalCluster Cluster = new LocalCluster();
+        Cluster.submitTopology("StormTopology", config, builder.createTopology());
+        Thread.sleep(1200000);
+        Cluster.shutdown();
 
 
 
