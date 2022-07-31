@@ -1,4 +1,4 @@
-# Twitter Sentiment Analysis with Lamba Architecture
+# Twitter Sentiment Analysis with Lambda Architecture
 ![](Images/logo_large.png) <br/>
 ## Table of Contents  
 - [About the Project](#1)  
@@ -7,7 +7,8 @@
 - [Usage](#4)
 # About the Project <a name="1"/>
 The sentiment analysis or opinion mining is the process of determining if a particular block of text is expressing a positive or negative reaction upon something.
-The goal of this project is to present a functioning Lambda Architecture built to compute a sentiment analysis upon tweets, according to specific keywords.The Implementation of the structure of the Lambda Architecture was made with *Apache Hadoop* for the *Batch Layer*, *Apache Storm* for the *Speed Layer* and *Apache HBase* for the *Serving Layer*. <br/>
+The goal of this project is to present a functioning Lambda Architecture built to compute a sentiment analysis upon tweets, according to specific keywords. <br/>
+The Implementation of the structure of the Lambda Architecture was made with *Apache Hadoop* for the *Batch Layer*, *Apache Storm* for the *Speed Layer* and *Apache HBase* for the *Serving Layer*. <br/>
 To replicate the stream of tweets it was used the Twitter API, through the Twitter4J library. <br/>
 A GUI, made with JavaFX, is provided to make easier the user experience.
 *LingPipe* was used of process the tweets.
@@ -22,6 +23,13 @@ A GUI, made with JavaFX, is provided to make easier the user experience.
 - [*Sentiment140*](https://www.kaggle.com/datasets/kazanova/sentiment140) : This is the sentiment140 dataset. It contains 1,600,000 tweets extracted using the twitter API.
 - [*FullCorpus*](https://github.com/guyz/twitter-sentiment-dataset)
 # Usage <a name="4"/>
+To replicate the code is necessary to get your own ```Twitter Developer Credentials```  and replace them in the placeholder text file in the repo.
+Next you need to start the server by running respectively Apache Hadoop, Storm and HBase. <br/>
+Then run the  ```ClassifierLambdaArchitecture``` to train and store the model that will be required by the Lambda Architecture. So you have to set the datasets paths and the the file to store the classifier model. <br/>
+Finally execute the class in the following order:
+- ```Topology``` setting as args the keywords for the query
+- ```BatchDriver```
+- ```GUILauncher```
 # Authors
 - **Lorenzo Gianassi**
 # Acknowledgments
