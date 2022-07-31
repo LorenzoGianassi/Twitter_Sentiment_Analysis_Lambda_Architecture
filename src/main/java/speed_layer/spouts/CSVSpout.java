@@ -18,7 +18,7 @@ import java.util.*;
 
 public class CSVSpout extends BaseRichSpout{
 
-    public static final String FILE = "datasets/full-corpus.csv";
+    public static final String FILE = "datasets/Full_Corpus_Reducted.csv";
 
     private SpoutOutputCollector collector;
     private List<List<String>> records;

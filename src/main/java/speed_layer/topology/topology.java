@@ -22,11 +22,12 @@ public class topology{
     public static void main(String[] args) throws Exception{
 
         // Initialize the twitter credentials requested by Twitter API
-        List<String> lines = Files.readLines(new File("TwitterCredentials"), Charset.defaultCharset());
+        List<String> lines = Files.readLines(new File("TwitterDevCredentials"), Charset.defaultCharset());
         String CKey = Arrays.asList(lines.get(0).split(":")).get(1).trim();
         String CSecret = Arrays.asList(lines.get(1).split(":")).get(1).trim();
         String AccToken = Arrays.asList(lines.get(2).split(":")).get(1).trim();
         String AccTokenSecret = Arrays.asList(lines.get(3).split(":")).get(1).trim();
+
 
         //Read keywords as an argument
         String[] arguments = args.clone();
@@ -41,8 +42,8 @@ public class topology{
         Admin admin = connection.getAdmin();
 
         // Batch View
-        if(!admin.tableExists(TableName.valueOf("batch_view"))){
-            TableDescriptor BatchView = TableDescriptorBuilder.newBuilder(TableName.valueOf("atch_view"))
+        if(!admin.tableExists(TableName.valueOf("Batch_View"))){
+            TableDescriptor BatchView = TableDescriptorBuilder.newBuilder(TableName.valueOf("Batch_View"))
                     .setColumnFamily(ColumnFamilyDescriptorBuilder.newBuilder("sentiment_count".getBytes()).build()).build();
 
             admin.createTable(BatchView);
@@ -50,29 +51,29 @@ public class topology{
 
 
         // Master Database
-        if(!admin.tableExists(TableName.valueOf("master_database"))){
-            TableDescriptor MasterDatabase = TableDescriptorBuilder.newBuilder(TableName.valueOf("master_database"))
+        if(!admin.tableExists(TableName.valueOf("Tweet_Master_Db"))){
+            TableDescriptor MasterDatabase = TableDescriptorBuilder.newBuilder(TableName.valueOf("Tweet_Master_Db"))
                     .setColumnFamily(ColumnFamilyDescriptorBuilder.newBuilder("content".getBytes()).build()).build();
 
             admin.createTable(MasterDatabase);
         }
 
         // Realtime Database
-        if(!admin.tableExists(TableName.valueOf("realtime_database"))){
-            TableDescriptor RealtimeView = TableDescriptorBuilder.newBuilder(TableName.valueOf("realtime_database"))
+        if(!admin.tableExists(TableName.valueOf("Real_Time_Db"))){
+            TableDescriptor RealtimeView = TableDescriptorBuilder.newBuilder(TableName.valueOf("Real_Time_Db"))
                     .setColumnFamily(ColumnFamilyDescriptorBuilder.newBuilder("content".getBytes()).build()).build();
 
             admin.createTable(RealtimeView);
         }
 
 
-        // Syncchronization table
-        if(!admin.tableExists(TableName.valueOf("sync_table"))){
-            TableDescriptor sync = TableDescriptorBuilder.newBuilder(TableName.valueOf("sync_table"))
+        // Synchronization table
+        if(!admin.tableExists(TableName.valueOf("Sync_Table"))){
+            TableDescriptor sync = TableDescriptorBuilder.newBuilder(TableName.valueOf("Sync_Table"))
                     .setColumnFamily(ColumnFamilyDescriptorBuilder.newBuilder("placeholder".getBytes()).build()).build();
 
             admin.createTable(sync);
-            Table table = connection.getTable(TableName.valueOf("sync_table"));
+            Table table = connection.getTable(TableName.valueOf("Sync_Table"));
             table.put(new Put(Bytes.toBytes("MapRed_start_timestamp"), 0)
                     .addColumn(Bytes.toBytes("placeholder"), Bytes.toBytes(""), Bytes.toBytes("")));
             table.put(new Put(Bytes.toBytes("MapRed_end_timestamp"), 0)
@@ -90,13 +91,13 @@ public class topology{
 
         builder.setBolt("Classifier-Bolt", new ClassifierBolt("SentimentClassifierTrainedModel.model")).shuffleGrouping("Parser-Bolt").shuffleGrouping("CSV-Spout");
 
-        builder.setBolt("MasterDb-Bolt", new MasterDbBolt("tweet_master_Db")).shuffleGrouping("Parser-Bolt").shuffleGrouping("CSV-Spout");
+        builder.setBolt("MasterDb-Bolt", new MasterDbBolt("Tweet_Master_Db")).shuffleGrouping("Parser-Bolt").shuffleGrouping("CSV-Spout");
 
-        builder.setBolt("RealTimeDb-Bolt", new RealTimeDbBolt("Real_time_Db")).shuffleGrouping("Classifier-Bolt");
+        builder.setBolt("RealTimeDb-Bolt", new RealTimeDbBolt("Real_Time_Db")).shuffleGrouping("Classifier-Bolt");
 
-        builder.setSpout("Syncronization-Spout", new SyncSpout("Synchronization"));
+        builder.setSpout("Syncronization-Spout", new SyncSpout("Sync_Table"));
 
-        builder.setBolt("Synchronization-Bolt", new SyncBolt("Real_time_Db")).shuffleGrouping("Synchronizaion-Spout");
+        builder.setBolt("Synchronization-Bolt", new SyncBolt("Real_Time_Db")).shuffleGrouping("Synchronizaion-Spout");
 
 
         //Initialize the Cluster

@@ -31,7 +31,7 @@ public class BatchDriver extends Configured implements Tool{
         scan.addFamily(Bytes.toBytes("content"));
 
         Connection connection = ConnectionFactory.createConnection(HBaseConfiguration.create());
-        Table table = connection.getTable(TableName.valueOf("synchronization_table"));
+        Table table = connection.getTable(TableName.valueOf("Sync_Table"));
 
         table.put(new Put(Bytes.toBytes("MapReduce_start_time"))
                 .addColumn(Bytes.toBytes("placeholder"), Bytes.toBytes(""), Bytes.toBytes("")));
@@ -49,8 +49,8 @@ public class BatchDriver extends Configured implements Tool{
 
 
 
-        TableMapReduceUtil.initTableMapperJob("tweet_master_database", scan, BatchMapper.class, Text.class, Text.class, job);
-        TableMapReduceUtil.initTableReducerJob("tweet_batch_view", BatchReducer.class, job);
+        TableMapReduceUtil.initTableMapperJob("Tweet_Master_Db", scan, BatchMapper.class, Text.class, Text.class, job);
+        TableMapReduceUtil.initTableReducerJob("Batch_View", BatchReducer.class, job);
 
 
 
