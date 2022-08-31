@@ -76,7 +76,7 @@ public class GUIController implements Initializable{
                 return new SimpleStringProperty(row[2]);
             });
 
-            realTimeTableView.getItems().setAll(parseRealTimeResultsList(realTimeViewTable));
+            realTimeTableView.getItems().setAll(parseRealTimeView(realTimeViewTable));
 
 
             //Batch TableView
@@ -96,7 +96,7 @@ public class GUIController implements Initializable{
                 return new SimpleStringProperty(row[2]);
             });
 
-            batchTableView.getItems().setAll(parseBatchResultsList(batchViewTable));
+            batchTableView.getItems().setAll(parseBatchView(batchViewTable));
 
 
             //Bar Chart
@@ -106,7 +106,7 @@ public class GUIController implements Initializable{
             XYChart.Series<String, Number> negSeries = new XYChart.Series<String, Number>();
             negSeries.setName("Negative");
 
-            for(String[] row: parseChartSeries(batchViewTable, realTimeViewTable)){
+            for(String[] row: parseCombinedView(batchViewTable, realTimeViewTable)){
                 posSeries.getData().add(new XYChart.Data<String, Number>(row[0], Integer.parseInt(row[1])));
                 negSeries.getData().add(new XYChart.Data<String, Number>(row[0], Integer.parseInt(row[2])));
             }
@@ -117,15 +117,15 @@ public class GUIController implements Initializable{
 
             Timeline clock = new Timeline(new KeyFrame(Duration.ZERO, e -> {
                 try{
-                    realTimeTableView.getItems().setAll(parseRealTimeResultsList(realTimeViewTable));
-                    batchTableView.getItems().setAll(parseBatchResultsList(batchViewTable));
+                    realTimeTableView.getItems().setAll(parseRealTimeView(realTimeViewTable));
+                    batchTableView.getItems().setAll(parseBatchView(batchViewTable));
                     realTimeTableView.refresh();
                     batchTableView.refresh();
 
                     posSeries.getData().clear();
                     negSeries.getData().clear();
                     combinedViewsChart.setAnimated(false);
-                    for(String[] row: parseChartSeries(batchViewTable, realTimeViewTable)){
+                    for(String[] row: parseCombinedView(batchViewTable, realTimeViewTable)){
                         posSeries.getData().add(new XYChart.Data<String, Number>(row[0], Integer.parseInt(row[1])));
                         negSeries.getData().add(new XYChart.Data<String, Number>(row[0], Integer.parseInt(row[2])));
                     }
@@ -147,7 +147,7 @@ public class GUIController implements Initializable{
     }
 
     // Aggregating data chart
-    private ArrayList<String[]> parseBatchResultsList(Table table) throws IOException{
+    private ArrayList<String[]> parseBatchView(Table table) throws IOException{
         ArrayList<String[]> resultList = new ArrayList<>();
 
         Scan GUIscan = new Scan();
@@ -174,7 +174,7 @@ public class GUIController implements Initializable{
         return resultList;
     }
 
-    private ArrayList<String[]> parseRealTimeResultsList(Table table) throws IOException{
+    private ArrayList<String[]> parseRealTimeView(Table table) throws IOException{
         ArrayList<String[]> resultList = new ArrayList<>();
 
         Scan GUIscan = new Scan();
@@ -224,10 +224,10 @@ public class GUIController implements Initializable{
         return resultList;
     }
 
-    private ArrayList<String[]> parseChartSeries(Table batchTable, Table realTimeTable) throws IOException{
-        ArrayList<String[]> chartSeries = new ArrayList<>();
-        ArrayList<String[]> batchResults = parseBatchResultsList(batchTable);
-        ArrayList<String[]> realTimeResults = parseRealTimeResultsList(realTimeTable);
+    private ArrayList<String[]> parseCombinedView(Table batchTable, Table realTimeTable) throws IOException{
+        ArrayList<String[]> combinedView = new ArrayList<>();
+        ArrayList<String[]> batchResults = parseBatchView(batchTable);
+        ArrayList<String[]> realTimeResults = parseRealTimeView(realTimeTable);
 
         for(String[] batchRow: batchResults){
             int posCount = Integer.parseInt(batchRow[1]);
@@ -238,28 +238,28 @@ public class GUIController implements Initializable{
                     negCount += Integer.parseInt(realTimeRow[2]);
                 }
             }
-            chartSeries.add(new String[]{batchRow[0], String.valueOf(posCount), String.valueOf(negCount)});
+            combinedView.add(new String[]{batchRow[0], String.valueOf(posCount), String.valueOf(negCount)});
         }
 
         for(String[] realTimeRow : realTimeResults){
             boolean found = false;
-            for(String[] chartRow : chartSeries){
+            for(String[] chartRow : combinedView){
                 found = realTimeRow[0].equals(chartRow[0]);
                 if(found){
                     break;
                 }
             }
             if(!found){
-                chartSeries.add(realTimeRow);
+                combinedView.add(realTimeRow);
             }
         }
 
-        chartSeries.sort(new Comparator<String[]>(){
+        combinedView.sort(new Comparator<String[]>(){
             @Override
             public int compare(String[] firstString, String[] secondString){
                 return firstString[0].compareTo(secondString[0]);
             }
         });
-        return chartSeries;
+        return combinedView;
     }
 }
