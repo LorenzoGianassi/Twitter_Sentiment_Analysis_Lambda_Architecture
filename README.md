@@ -27,7 +27,7 @@ To replicate the code is necessary to get your own ```Twitter Developer Credenti
 Next you need to start the server by running respectively Apache Hadoop, Storm and HBase. <br/>
 Then run the  ```ClassifierLambdaArchitecture``` to train and store the model that will be required by the Lambda Architecture. So you have to set the datasets paths and the the file to store the classifier model. <br/>
 Finally execute the class in the following order:
-- ```Topology``` setting as args the keywords for the query
+- ```Topology``` need to set as args the keywords for the query
 - ```BatchDriver```
 - ```GUILauncher```
 # Authors
